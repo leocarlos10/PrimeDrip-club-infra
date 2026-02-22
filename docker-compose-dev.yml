@@ -6,10 +6,10 @@ services:
     container_name: prime-db-dev
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: {MYSQL_DATABASE}
-      MYSQL_ROOT_PASSWORD: {MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: {MYSQL_USER}
-      MYSQL_PASSWORD: {MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     command:
       --log-bin-trust-function-creators=1 # permite crear funciones sin ser un usuario super
@@ -30,10 +30,13 @@ services:
       - ./backend/prime_drip_club:/app
       - maven-cache:/root/.m2
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://prime-db:3306/{MYSQL_DATABASE}
-      SPRING_DATASOURCE_USERNAME: {MYSQL_USER}
-      SPRING_DATASOURCE_PASSWORD: {MYSQL_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:mysql://prime-db:3306/${MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_EXPIRATION_TIME: ${JWT_EXPIRATION_TIME}
+
     depends_on:
       - prime-db
 
@@ -58,8 +61,8 @@ services:
       - "8081:80"
     environment:
       PMA_HOST: prime-db
-      PMA_USER: NeoCode
-      PMA_PASSWORD: NeoCode1005
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
     depends_on:
       - prime-db
 
