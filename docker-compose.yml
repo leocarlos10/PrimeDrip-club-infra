@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  prime-db:
+    image: mysql:8.0.45
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: primedrip_club_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: NeoCode
+      MYSQL_PASSWORD: NeoCode1005
+    volumes:
+      - prime-db-data:/var/lib/mysql
+  backend:
+    build: ./backend/prime_drip_club
+    restart: unless-stopped
+    expose:
+      - "8080"
+    depends_on:
+      - prime-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://prime-db:3306/prime_drip_club_db
+      SPRING_DATASOURCE_USERNAME: NeoCode
+      SPRING_DATASOURCE_PASSWORD: NeoCode1005;
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+  frontend:
+    build: ./frontend/web-primedripclub
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+    PMA_HOST: prime-db
+    PMA_USER: NeoCode
+    PMA_PASSWORD: NeoCode1005
+    depends_on:
+      - prime-db
+
+volumes:
+  prime-db-data:

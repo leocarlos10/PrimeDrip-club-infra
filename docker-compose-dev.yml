@@ -1,0 +1,68 @@
+version: "3.9"
+
+services:
+  prime-db:
+    image: mysql:8.0.45
+    container_name: prime-db-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: {MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: {MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: {MYSQL_USER}
+      MYSQL_PASSWORD: {MYSQL_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    command:
+      --log-bin-trust-function-creators=1 # permite crear funciones sin ser un usuario super
+    ports:
+      - "3306:3306"
+    volumes:
+      - prime-db-data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./backend/prime_drip_club
+      dockerfile: Dockerfile.dev
+    container_name: prime-backend-dev
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend/prime_drip_club:/app
+      - maven-cache:/root/.m2
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://prime-db:3306/{MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: {MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: {MYSQL_PASSWORD}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+    depends_on:
+      - prime-db
+
+  frontend:
+    build:
+      context: ./frontend/web-primedripclub
+      dockerfile: Dockerfile.dev
+    container_name: prime-frontend-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/web-primedripclub:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: prime-db
+      PMA_USER: NeoCode
+      PMA_PASSWORD: NeoCode1005
+    depends_on:
+      - prime-db
+
+volumes:
+  prime-db-data:
+  maven-cache:
