@@ -34,7 +34,7 @@ git --version
 ## 1️⃣ Clonar el repositorio de infraestructura
 
 ```bash
-git clone https://github.com/tu-org/webPrimeDripClub.git
+git clone https://github.com/leocarlos10/PrimeDrip-club-infra.git
 cd webPrimeDripClub
 ```
 
