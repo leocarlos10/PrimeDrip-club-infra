@@ -20,14 +20,14 @@ services:
 
   backend:
     build:
-      context: ./backend/prime_drip_club
+      context: ./backend-web-primedripclub
       dockerfile: Dockerfile.dev
     container_name: prime-backend-dev
     restart: unless-stopped
     ports:
       - "8080:8080"
     volumes:
-      - ./backend/prime_drip_club:/app
+      - ./backend-web-primedripClub:/app
       - maven-cache:/root/.m2
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://prime-db:3306/${MYSQL_DATABASE}
@@ -42,14 +42,14 @@ services:
 
   frontend:
     build:
-      context: ./frontend/web-primedripclub
+      context: ./frontend-web-primedripClub
       dockerfile: Dockerfile.dev
     container_name: prime-frontend-dev
     restart: unless-stopped
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend/web-primedripclub:/app
+      - ./frontend-web-primedripClub:/app
       - /app/node_modules
     depends_on:
       - backend
