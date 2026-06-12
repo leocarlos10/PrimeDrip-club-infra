@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   prime-db:
     image: mysql:8.0.45
@@ -20,7 +18,7 @@ services:
 
   backend:
     build:
-      context: ./backend-web-primedripclub
+      context: ./backend-web-primedripClub
       dockerfile: Dockerfile.dev
     container_name: prime-backend-dev
     restart: unless-stopped
